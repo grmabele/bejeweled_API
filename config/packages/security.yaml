@@ -1,0 +1,83 @@
+# security:
+#     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+#     password_hashers:
+#         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+#     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+#     providers:
+#         users_in_memory: { memory: null }
+#     firewalls:
+#         dev:
+#             pattern: ^/(_(profiler|wdt)|css|images|js)/
+#             security: false
+#         main:
+#             lazy: true
+#             provider: users_in_memory
+
+#             # activate different ways to authenticate
+#             # https://symfony.com/doc/current/security.html#the-firewall
+
+#             # https://symfony.com/doc/current/security/impersonating_user.html
+#             # switch_user: true
+
+#     # Easy way to control access for large sections of your site
+#     # Note: Only the *first* access control that matches will be used
+#     access_control:
+#         # - { path: ^/admin, roles: ROLE_ADMIN }
+#         # - { path: ^/profile, roles: ROLE_USER }
+
+# when@test:
+#     security:
+#         password_hashers:
+#             # By default, password hashers are resource intensive and take time. This is
+#             # important to generate secure password hashes. In tests however, secure hashes
+#             # are not important, waste resources and increase test times. The following
+#             # reduces the work factor to the lowest possible values.
+#             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+#                 algorithm: auto
+#                 cost: 4 # Lowest possible value for bcrypt
+#                 time_cost: 3 # Lowest possible value for argon
+#                 memory_cost: 10 # Lowest possible value for argon
+#     providers:
+#         users_in_database:
+#         entity:
+#             class: App\Entity\Users # Remplacez par le nom de votre entité utilisateur
+#             property: email # ou email, selon votre cas d'utilisation
+    
+security:
+    # Configuration de l'encodeur de mot de passe
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # Configuration des fournisseurs d'utilisateurs
+    providers:
+        users_in_database:
+            entity:
+                class: App\Entity\Users # Remplacez par le nom de votre entité utilisateur
+                property: email # Utilisez l'identifiant unique de l'utilisateur pour la connexion
+
+    # Configuration des firewalls
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: users_in_database
+            # Ici, ajoutez la méthode d'authentification de votre choix, comme form_login ou http_basic
+            # form_login: ...
+            # http_basic: ...
+
+    # Contrôle d'accès
+    access_control:
+        # Exemple de règles pour restreindre l'accès
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Valeur la plus basse pour bcrypt
+                time_cost: 3 # Valeur la plus basse pour argon
+                memory_cost: 10 # Valeur la plus basse pour argon
